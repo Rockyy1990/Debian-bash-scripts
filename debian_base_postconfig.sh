@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Last Edit: 07.02.2025
+# Last Edit: 11.02.2025
 
 echo ""
 echo "----------------------------------------------"
@@ -11,11 +11,16 @@ sleep 3
 echo ""
 echo "      !!!You should read this script first!!!
 "
+read -p "Press any key to continue.."
+clear
+
+echo ""
 read -p "If not set: add contrib non-free non-free-firmware to the sources.list
                         Press any key to edit the sources.list.
 "
 
 sudo nano /etc/apt/sources.list
+clear
 
 
 # Update the package list and upgrade existing packages
