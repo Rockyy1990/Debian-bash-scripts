@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Last Edit: 11.02.2025
+# Last Edit: 06.09.2025
 
 # Define color codes
 ORANGE='\033[1;33m'  # Orange color
@@ -22,7 +22,7 @@ read -p "Press any key to continue.."
 echo ""
 
 # Remove unneeded packages
-sudo apt autoremove -y juk dragonplayer gimp akregator
+sudo apt autoremove -y juk dragonplayer gimp akregator sweeper
 clear
 
 echo ""
@@ -33,58 +33,49 @@ sudo nano /etc/apt/sources.list
 clear
 
 
-# Update the package list and upgrade existing packages
-sudo apt update
-sudo apt upgrade -y
-
 sudo dpkg --add-architecture i386
 
+sudo apt update
+sudo apt upgrade -y
+sudo apt dist-upgrade -y
+
+
 # Install necessary dependencies
-sudo apt install -y build-essential dkms software-properties-common apt-transport-https ufw gsmartcontrol fakeroot xdg-utils xdg-user-dirs synaptic
-sudo apt install -y gnome-disk-utility mtools f2fs-tools xfsdump gvfs python3 python3-pip xserver-xorg-video-fbdev
+sudo apt install -y build-essential fakeroot dkms curl software-properties-common apt-transport-https ufw gsmartcontrol xdg-utils xdg-user-dirs synaptic
+sudo apt install -y gnome-disk-utility mtools f2fs-tools xfsdump gvfs gvfs-backends 
+sudo apt install -y python3 python3-pip
 clear
 
 
-## "Liquorix Kernel"
-#curl -s 'https://liquorix.net/install-liquorix.sh' | sudo bash
-#clear
-
-
-# Xanmod Kernel
-wget -qO - https://dl.xanmod.org/archive.key | sudo gpg --dearmor -vo /etc/apt/keyrings/xanmod-archive-keyring.gpg
-echo 'deb [signed-by=/etc/apt/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | sudo tee /etc/apt/sources.list.d/xanmod-release.list
+# "Liquorix Kernel"
+curl -s 'https://liquorix.net/install-liquorix.sh' | sudo bash
 clear
+
 
 
 # Add the WineHQ repository
 sudo mkdir -pm755 /etc/apt/keyrings
 wget -O - https://dl.winehq.org/wine-builds/winehq.key | sudo gpg --dearmor -o /etc/apt/keyrings/winehq-archive.key -
-sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources
-clear
+sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/trixie/winehq-trixie.sources
 
 # Update the package list again after adding new repositories
 sudo apt update
 
 # Install some needed packages
-sudo apt install -y libglw1-mesa mesa-opencl-icd mesa-utils vulkan-tools vulkan-validationlayers
-sudo apt install -y thunderbird celluloid strawberry
-sudo apt install -y firefox
+sudo apt install -y mesa-opencl-icd mesa-utils vulkan-tools vulkan-validationlayers 
+sudo apt install -y thunderbird firefox-esr-l10n-de celluloid strawberry mintstick
+
 
 # Install multimedia codecs
-sudo apt install -y \
-         libavcodec-extra \
-         gstreamer1.0-fdkaac \
-         gstreamer1.0-vaapi \
-         gstreamer1.0-pipewire \
-         pipewire-v4l2 \
-         pipewire-libcamera \
-         lame \
-	     flac
+sudo apt install -y libavcodec-extra gstreamer1.0-fdkaac gstreamer1.0-vaapi ffmpeg lame flac  
+sudo apt install -y pipewire-v4l2 pipewire-libcamera gstreamer1.0-pipewire
+         
+	     
 
 
 # Wine and Steam Gaming Platform
-sudo apt install -y  --install-recommends winehq-stable winetricks wine-binfmt libvkd3d1 libvkd3d-utils1
-sudo apt install -y steam protontricks libgdiplus libfaudio0 libopenal1 ttf-mscorefonts-installer
+sudo apt install -y --install-recommends winehq-stable winetricks wine-binfmt libwinpr3-3 libvkd3d1 libvkd3d-utils1
+sudo apt install -y steam-installer libgdiplus libfaudio0 ttf-mscorefonts-installer
 
 echo ""
 echo " Downloading Protonup-qt.."
@@ -110,12 +101,12 @@ else
 fi
 
 
-# Install the Xanmod Kernel v3
-sudo apt install linux-xanmod-x64v3
-
+# Upgrading pip
+python -m pip3 install --upgrade pip
 
 # Install yt-dlp using pip
 pip3 install -U yt-dlp
+
 
 # Install Virt-Manager
 sudo apt install -y virt-manager libvirt-daemon-system libvirt-clients qemu-kvm
@@ -129,13 +120,20 @@ sudo apt install -y flatpak xdg-desktop-portal xdg-desktop-portal-gtk
 # Add the Flathub repository (where most Flatpak apps are hosted)
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
+flatpak install -y flathub com.github.tchx84.Flatseal
+flatpak install -y flathub com.nomachine.nxplayer
+flatpak install -y flathub fr.handbrake.ghb
+flatpak install flathub net.davidotek.pupgui2
+
 
 # Enable ufw
-sudo ufw enable
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
 sudo ufw allow http  # Allows HTTP (port 80)
 sudo ufw allow https # Allows HTTPS (port 443)
+sudo ufw allow 4000/tcp
+sudo ufw allow 22/tcp
+sudo ufw enable
 
 
 # Set /etc/environment variables
@@ -205,6 +203,7 @@ sudo fstrim -av
 
 
 # Clean up
+sudo apt purge -y
 sudo apt autoremove -y
 sudo apt autoclean
 sudo apt clean
@@ -219,5 +218,5 @@ read -p "..Press any key to reboot the System.."
 clear
 echo ""
 echo "Reboot.."
-sleep 2
+sleep 1
 sudo reboot
