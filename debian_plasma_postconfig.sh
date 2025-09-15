@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Last Edit: 06.09.2025
+# Last Edit: 13.09.2025
 
 # Define color codes
 ORANGE='\033[1;33m'  # Orange color
@@ -41,7 +41,8 @@ sudo apt dist-upgrade -y
 
 
 # Install necessary dependencies
-sudo apt install -y build-essential fakeroot dkms curl software-properties-common apt-transport-https ufw gsmartcontrol xdg-utils xdg-user-dirs synaptic
+sudo apt install -y build-essential fakeroot dkms curl apt-transport-https ufw gsmartcontrol xdg-utils xdg-user-dirs synaptic
+sudo apt install -y libwayland-egl++1 wayland-protocols plasma-wayland-protocols libwlroots-0.18
 sudo apt install -y gnome-disk-utility mtools f2fs-tools xfsdump gvfs gvfs-backends 
 sudo apt install -y python3 python3-pip
 clear
@@ -77,11 +78,7 @@ sudo apt install -y pipewire-v4l2 pipewire-libcamera gstreamer1.0-pipewire
 sudo apt install -y --install-recommends winehq-stable winetricks wine-binfmt libwinpr3-3 libvkd3d1 libvkd3d-utils1
 sudo apt install -y steam-installer libgdiplus libfaudio0 ttf-mscorefonts-installer
 
-echo ""
-echo " Downloading Protonup-qt.."
-sleep 3
-wget https://github.com/DavidoTek/ProtonUp-Qt/releases/download/v2.11.1/ProtonUp-Qt-2.11.1-x86_64.AppImage
-echo ""
+
 
 # Define the path to the OpenAL configuration file
 CONFIG_FILE="/etc/openal/alsoft.conf"
@@ -115,7 +112,8 @@ sudo systemctl enable libvirtd
 
 
 # Install Flatpak
-sudo apt install -y flatpak xdg-desktop-portal xdg-desktop-portal-gtk
+sudo apt install -y flatpak node-xdg-basedir xdg-desktop-portal xdg-desktop-portal-gtk
+sudo apt install -y flatpak-xdg-utils gir1.2-flatpak-1.0 kde-config-flatpak libportal1 libportal-qt5-1
 
 # Add the Flathub repository (where most Flatpak apps are hosted)
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
