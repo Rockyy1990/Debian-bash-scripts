@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Last Edit: 13.09.2025
+# Last Edit: 02.11.2025
 
 # Define color codes
 ORANGE='\033[1;33m'  # Orange color
@@ -23,11 +23,12 @@ echo ""
 
 # Remove unneeded packages
 sudo apt autoremove -y juk dragonplayer gimp akregator sweeper
+sudo apt autoremove -y yt-dlp
 clear
 
 echo ""
-read -p "If not set: add contrib non-free non-free-firmware to the sources.list
-                        Press any key to edit the sources.list.
+read -p "If not set: add - contrib non-free non-free-firmware - to the sources.list (without the - -)
+                          Press any key to edit the sources.list.
 "
 sudo nano /etc/apt/sources.list
 clear
@@ -44,7 +45,7 @@ sudo apt dist-upgrade -y
 sudo apt install -y build-essential fakeroot dkms curl apt-transport-https ufw gsmartcontrol xdg-utils xdg-user-dirs synaptic
 sudo apt install -y libwayland-egl++1 wayland-protocols plasma-wayland-protocols libwlroots-0.18
 sudo apt install -y gnome-disk-utility mtools f2fs-tools xfsdump gvfs gvfs-backends 
-sudo apt install -y python3 python3-pip
+sudo apt install -y python3 python3-venv python3-pip
 clear
 
 
@@ -64,7 +65,7 @@ sudo apt update
 
 # Install some needed packages
 sudo apt install -y mesa-opencl-icd mesa-utils vulkan-tools vulkan-validationlayers 
-sudo apt install -y thunderbird firefox-esr-l10n-de celluloid strawberry mintstick
+sudo apt install -y thunderbird firefox-esr-l10n-de celluloid strawberry soundconverter mintstick
 
 
 # Install multimedia codecs
@@ -98,12 +99,6 @@ else
 fi
 
 
-# Upgrading pip
-python -m pip3 install --upgrade pip
-
-# Install yt-dlp using pip
-pip3 install -U yt-dlp
-
 
 # Install Virt-Manager
 sudo apt install -y virt-manager libvirt-daemon-system libvirt-clients qemu-kvm
@@ -112,16 +107,30 @@ sudo systemctl enable libvirtd
 
 
 # Install Flatpak
-sudo apt install -y flatpak node-xdg-basedir xdg-desktop-portal xdg-desktop-portal-gtk
-sudo apt install -y flatpak-xdg-utils gir1.2-flatpak-1.0 kde-config-flatpak libportal1 libportal-qt5-1
+# sudo apt install -y flatpak node-xdg-basedir xdg-desktop-portal xdg-desktop-portal-gtk
+# sudo apt install -y flatpak-xdg-utils gir1.2-flatpak-1.0 kde-config-flatpak libportal1 libportal-qt5-1
 
 # Add the Flathub repository (where most Flatpak apps are hosted)
-sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+# sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-flatpak install -y flathub com.github.tchx84.Flatseal
-flatpak install -y flathub com.nomachine.nxplayer
-flatpak install -y flathub fr.handbrake.ghb
-flatpak install flathub net.davidotek.pupgui2
+# flatpak remove -y flathub com.github.tchx84.Flatseal
+# flatpak remove -y flathub com.nomachine.nxplayer
+# flatpak remove -y flathub fr.handbrake.ghb
+# flatpak remove -y flathub net.davidotek.pupgui2
+
+
+# Creates an virtual environment named myenv
+python3 -m venv myenv
+
+# Activates the new environment and upgrades python pip
+source myenv/bin/activate
+python -m pip3 install --upgrade pip
+
+# Installs yt-dlp
+pip3 install -U yt-dlp
+
+# Creating a symlink to use yt-dlp system-wide
+sudo ln -s ~/myenv/bin/yt-dlp /usr/local/bin/yt-dlp
 
 
 # Enable ufw
@@ -216,5 +225,5 @@ read -p "..Press any key to reboot the System.."
 clear
 echo ""
 echo "Reboot.."
-sleep 1
+sleep 2
 sudo reboot
